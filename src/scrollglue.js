@@ -77,7 +77,12 @@
                     
                     $window.addEventListener('resize', scrollIfGlued, false);
 
-                    $el.bind('scroll', function(){
+                    var bindOn = $el;
+                    if(el.constructor.name === HTMLBodyElement.name) {
+                        bindOn = $(window);
+                    }
+
+                    bindOn.bind('scroll', function(){
                         activationState.setValue(direction.isAttached(el));
                     });
                 }
@@ -87,6 +92,9 @@
 
     var bottom = {
         isAttached: function(el){
+            if(el.constructor.name === HTMLBodyElement.name) {
+                return $(window).scrollTop() + $(window).height() == $(document).height();
+            }
             // + 1 catches off by one errors in chrome
             return el.scrollTop + el.clientHeight + 1 >= el.scrollHeight;
         },
